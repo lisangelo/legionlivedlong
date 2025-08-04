@@ -1,0 +1,30 @@
+body {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+ 
+/* Dark theme styles applied when user prefers dark mode */
+body.dark-theme {
+    background-color: #333;
+    color: #f0f0f0;
+}  
+
+h1 {
+    margin-left: 20px;
+  }
+
+
+.year {
+    font-weight: bold;
+    clear: left;
+}  
+
+.small-pic {
+    width: 100px;
+    height: 140px;
+    padding-top: 2px; 
+    padding-right: 4px; 
+    padding-bottom: 2px;
+    padding-left: 4px;
+    float: left;
+}  
