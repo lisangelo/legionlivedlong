@@ -5,8 +5,8 @@ body {
  
 /* Dark theme styles applied when user prefers dark mode */
 body.dark-theme {
-    background-color: #333;
-    color: #f0f0f0;
+    background-color: #010728;
+    color: #bce9f1;
 }  
 
 h1 {
@@ -32,5 +32,5 @@ h1 {
 
 /* Hover state of the image */
 .small-pic:hover {
-  border-color: yellow;
+  border-color: currentColor;
 }
