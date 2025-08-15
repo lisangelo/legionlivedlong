@@ -1,9 +1,15 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
+Table planets {
+  id_planet integer [primary key]
+  name varchar(100) [not null]
+}
+
 Table characters {
   id_character integer [primary key]
   real_name varchar(100) [not null]
+  id_planet integer 
   year_first_appearance integer [not null]
   link_wikipedia varchar(200)
 }
@@ -20,6 +26,11 @@ Table characterspics {
   pic varchar(100)
 }
 
+Table years {
+  id_year integer [primary key]
+  obs text 
+}
+
 Table memberships {
   id_character integer [not null]
   year_initial integer [not null]
@@ -33,7 +44,7 @@ Table membershipsendingreasons {
 }
 
 Ref: "characters"."id_character" < "charactersnames"."id_character"
-
 Ref: "characters"."id_character" < "characterspics"."id_character"
-
 Ref: "characters"."id_character" < "memberships"."id_character"
+Ref: "membershipsendingreasons"."id_endingreason" < "memberships"."id_endingreason"
+Ref: "characters"."id_planet" < "planets"."id_planet"

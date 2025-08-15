@@ -17,9 +17,28 @@ function showSmallPicture(string $picture, string $title, string $alternative, s
 
 // anchor to year 
 // $year - selected year
-function showYear(int $year): string {
-    $htmlText = '<div class="year"> <br>'. strval($year) .'<br> </div> ';
+function showYear(int $year, string $obs): string {
+    $htmlText = '<div class="year" > '
+            .'<a id="'.strval($year).'"';
+    if ($obs != null) {
+        $htmlText .= ' title="'. $obs . '" ';
+     }
+     $htmlText .= '>' 
+                . strval($year) 
+                .'</a><br> </div> ';
+         
 
+    return $htmlText;
+}
+
+// creates an option in combo year 
+// $year - selected year
+function createYearSelect(int $year): string {
+    $htmlText = '<option value="#'.strval($year).'">'
+                . strval($year) 
+                .'</option> ';
+
+            
     return $htmlText;
 }
 
@@ -47,20 +66,39 @@ function getDBName():string {
     return $name;
 }
 
+// query to get all option years
+function getQueryYearsSelect(): string {
+    $sqlText = "with recursive YearsLinks as ( 
+                select year(curdate()) as option  
+                union all 
+                select option - 1 from YearsLinks where option > 1958 
+                ) 
+                select option
+                from YearsLinks
+                order by option
+                ;";
+
+    return $sqlText;
+}
+
 // query to get all memberships
 function getQueryMemberships(): string {
-    $sqlText = "with recursive Years as ( 
+    $sqlText = "with recursive y as ( 
                 select year(curdate()) as current  
                 union all 
-                select current - 1 from Years where current > 1958 
+                select current - 1 from y where current > 1958 
                 ) 
                 select 
-                Years.current, 
+                y.current,
+                ifnull(( select obs
+                  from years 
+                  where id_year = y.current
+                ), '') as obs, 
                 (
                 select name 
                 from charactersnames 
                 where id_character = c.id_character
-                and year <= Years.current
+                and year <= y.current
                 order by year desc 
                 limit 1
                 ) as name,
@@ -69,28 +107,26 @@ function getQueryMemberships(): string {
                 select pic 
                 from characterspics 
                 where id_character = c.id_character
-                and year <= Years.current
+                and year <= y.current
                 order by year desc 
                 limit 1
                 ) as pic, 
                 m.year_initial as since,
                 mer.description as ending_reason
                 from memberships m
-                join Years 
+                join y 
                 on 1 = 1
                 inner join characters c 
                 on c.id_character = m.id_character
                 left join membershipsendingreasons mer
                 on mer.id_endingreason = m.id_endingreason
-                where m.year_initial <= Years.current
+                where m.year_initial <= y.current
                 and (
-                m.year_final >= Years.current
+                m.year_final >= y.current
                 or m.year_final is null
                 )
-                order by Years.current, c.id_character
+                order by y.current, c.id_character
                 ;";
 
     return $sqlText;
 }
-
-?>
